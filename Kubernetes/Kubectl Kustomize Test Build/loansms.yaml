@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: loansms
+  name: loansms-service
+  namespace: default
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: loansms
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: loansms
+  name: loansms-pod
+spec:
+  containers:
+  - image: jpierrel/cashmoney:loansMS
+    name: loansms
+    ports:
+    - containerPort: 8080
