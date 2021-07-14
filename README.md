@@ -1,2 +1,2 @@
 # cloud-resources
-Contains resource files for Cloud Development
+Contains Resource Files for Cloud Development
