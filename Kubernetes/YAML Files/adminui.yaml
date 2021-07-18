@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2021-07-12T02:11:46Z"
+  labels:
+    run: adminui
+  name: adminui-service
+  namespace: default
+  resourceVersion: "489137"
+  uid: 373c1f9e-c2f9-43fd-88d1-58ee15818216
+spec:
+  clusterIP: 10.96.66.197
+  clusterIPs:
+  - 10.96.66.197
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: adminui
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: adminui
+  name: adminui-pod
+spec:
+  containers:
+  - image: jpierrel/cashmoney:adminUI
+    name: adminui
+    ports:
+    - containerPort: 80

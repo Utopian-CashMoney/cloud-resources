@@ -1,0 +1,22 @@
+version: "3"
+services:
+    adminui:
+        image: "jpierrel/cashmoney:adminUI"
+        ports:
+            - "8001:80" 
+    userui:
+        image: "jpierrel/cashmoney:userUI"
+        ports:
+            - "8002:3000" 
+    userms:
+        image: "jpierrel/cashmoney:userMS"
+        ports:
+            - "8000:8000"
+    loansms:
+        image: "jpierrel/cashmoney:loansMS"
+        ports:
+            - "8080:8080"
+    branchesms:
+        image: "jpierrel/cashmoney:branchesMS"
+        ports:
+            - "8080:8080"
