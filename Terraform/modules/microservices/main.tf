@@ -9,8 +9,8 @@ resource "aws_ecr_repository" "branches_ms" {
   name = "branches_ms"
 }
 
-resource "aws_ecr_repository" "user_ms" {
-  name = "user_ms"
+resource "aws_ecr_repository" "user-ms" {
+  name = "user-ms"
 }
 
 # Microservice ECS cluster services
@@ -55,7 +55,7 @@ resource "aws_iam_role_policy_attachment" "ssm-managed-instance-attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_ecs_task_definition" "user_ms" {
+resource "aws_ecs_task_definition" "user-ms" {
   family                   = "service"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -64,8 +64,8 @@ resource "aws_ecs_task_definition" "user_ms" {
   execution_role_arn       = aws_iam_role.ecsExecution.arn
   container_definitions = jsonencode([
     {
-      name      = "user_ms"
-      image     = aws_ecr_repository.user_ms.repository_url
+      name      = "user-ms"
+      image     = aws_ecr_repository.user-ms.repository_url
       essential = true
       portMappings = [
         {
@@ -81,14 +81,12 @@ resource "aws_lb" "alb" {
   internal           = true
   load_balancer_type = "application"
   subnets            = var.private_subnet_ids
-
-  enable_deletion_protection = false
 }
 
-resource "aws_lb_target_group" "user_ms" {
+resource "aws_lb_target_group" "user-ms" {
   name        = "user-ms"
   port        = 8000
-  protocol    = "TCP"
+  protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.cashmoney_vpc_id
 }
@@ -100,20 +98,25 @@ resource "aws_lb_listener" "listener" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.user_ms.arn
+    target_group_arn = aws_lb_target_group.user-ms.arn
   }
 }
 
-resource "aws_ecs_service" "user_ms" {
+resource "aws_ecs_service" "user-ms" {
   name            = "user-ms"
   cluster         = aws_ecs_cluster.microservices.id
-  task_definition = aws_ecs_task_definition.user_ms.arn
+  task_definition = aws_ecs_task_definition.user-ms.arn
   desired_count   = 1
   launch_type     = "FARGATE"
 
+  network_configuration {
+    subnets          = var.private_subnet_ids
+    assign_public_ip = false
+  }
+
   load_balancer {
-    target_group_arn = aws_lb_target_group.user_ms.arn
-    container_name   = "user_ms"
+    target_group_arn = aws_lb_target_group.user-ms.arn
+    container_name   = "user-ms"
     container_port   = 8000
   }
 }
