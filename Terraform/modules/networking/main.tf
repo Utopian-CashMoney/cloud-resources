@@ -1,3 +1,4 @@
+
 resource "aws_vpc" "cashmoney_vpc" {
   cidr_block = var.vpc_cidr_block
 
@@ -19,7 +20,7 @@ resource "aws_subnet" "public_1a" {
 resource "aws_subnet" "public_1b" {
   vpc_id            = aws_vpc.cashmoney_vpc.id
   cidr_block        = var.subnet_cidr_block_public_1b
-  availability_zone = var.subnet_zone_1
+  availability_zone = var.subnet_zone_2
 
   tags = {
     Name = "cashmoney-public-1b"
@@ -29,7 +30,7 @@ resource "aws_subnet" "public_1b" {
 resource "aws_subnet" "private_1a" {
   vpc_id            = aws_vpc.cashmoney_vpc.id
   cidr_block        = var.subnet_cidr_block_private_1a
-  availability_zone = var.subnet_zone_2
+  availability_zone = var.subnet_zone_1
 
   tags = {
     Name = "cashmoney-private-1a"

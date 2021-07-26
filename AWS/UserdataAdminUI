@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Install Git and pull Admin UI repository, branch cloud-developer
+yum install git
+git clone -b cloud-developer https://github.com/Utopian-CashMoney/ucm-ui-admin.git /usr/local/
+
+curl -sL https://rpm.nodesource.com/setup_12.x | sudo bash -
+yum install -y nodejs
+npm install
+
+ng serve --host 0.0.0.0 --disable-host-check
