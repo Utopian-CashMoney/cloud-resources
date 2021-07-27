@@ -75,3 +75,39 @@ module "user-ms" {
     module.networking
   ]
 }
+
+module "loans-ms" {
+  source = "./modules/microservice"
+
+  cashmoney_vpc_id   = module.networking.cashmoney_vpc_id
+  private_subnet_ids = module.networking.private_subnet_ids
+  public_subnet_ids  = module.networking.public_subnet_ids
+
+  service_name            = "loans-ms"
+  cluster_id              = aws_ecs_cluster.microservices.id
+  container_port          = 8020
+  task_execution_role_arn = aws_iam_role.ecsExecution.arn
+  alb_arn                 = aws_lb.alb.arn
+
+  depends_on = [
+    module.networking
+  ]
+}
+
+module "branches-ms" {
+  source = "./modules/microservice"
+
+  cashmoney_vpc_id   = module.networking.cashmoney_vpc_id
+  private_subnet_ids = module.networking.private_subnet_ids
+  public_subnet_ids  = module.networking.public_subnet_ids
+
+  service_name            = "branches-ms"
+  cluster_id              = aws_ecs_cluster.microservices.id
+  container_port          = 8080
+  task_execution_role_arn = aws_iam_role.ecsExecution.arn
+  alb_arn                 = aws_lb.alb.arn
+
+  depends_on = [
+    module.networking
+  ]
+}

@@ -1,8 +1,8 @@
 
 # Microservice repository resources
 
-resource "aws_ecr_repository" "repo" {
-  name = var.service_name
+resource "aws_ecrpublic_repository" "repository" {
+  repository_name = var.service_name
 }
 
 resource "aws_ecs_task_definition" "task-def" {
@@ -15,7 +15,7 @@ resource "aws_ecs_task_definition" "task-def" {
   container_definitions = jsonencode([
     {
       name      = var.service_name
-      image     = aws_ecr_repository.repo.repository_url
+      image     = aws_ecrpublic_repository.repository.repository_uri
       essential = true
       portMappings = [
         {
