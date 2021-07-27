@@ -3,70 +3,75 @@ module "networking" {
   source = "./modules/networking"
 }
 
+/*
 module "user_website" {
   source = "./modules/user-site"
 }
+*/
 
-module "microservices" {
-  source = "./modules/microservices"
+# Microservice ECS cluster services
+
+resource "aws_ecs_cluster" "microservices" {
+  name = "cashmoney-microservices"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
+
+resource "aws_iam_role" "ecsExecution" {
+  name               = "ecsExecutionRole"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": [
+          "ec2.amazonaws.com"
+        ]
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "ec2-container-service-attachment" {
+  role       = aws_iam_role.ecsExecution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_role_policy_attachment" "ssm-managed-instance-attachment" {
+  role       = aws_iam_role.ecsExecution.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_lb" "alb" {
+  name               = "cashmoney-alb"
+  internal           = true
+  load_balancer_type = "application"
+  subnets            = module.networking.private_subnet_ids
+}
+
+module "user-ms" {
+  source = "./modules/microservice"
 
   cashmoney_vpc_id   = module.networking.cashmoney_vpc_id
   private_subnet_ids = module.networking.private_subnet_ids
   public_subnet_ids  = module.networking.public_subnet_ids
 
+  service_name            = "user-ms"
+  cluster_id              = aws_ecs_cluster.microservices.id
+  container_port          = 8000
+  task_execution_role_arn = aws_iam_role.ecsExecution.arn
+  alb_arn                 = aws_lb.alb.arn
+
   depends_on = [
     module.networking
   ]
 }
-
-/*
-resource "aws_ecs_cluster" "cluster" {
-  name = "example-ecs-cluster"
-
-  capacity_providers = ["FARGATE_SPOT", "FARGATE"]
-
-  default_capacity_provider_strategy {
-    capacity_provider = "FARGATE_SPOT"
-  }
-
-  setting {
-    name  = "containerInsights"
-    value = "disabled"
-  }
-}
-
-module "ecs-fargate" {
-  source  = "umotif-public/ecs-fargate/aws"
-  version = "~> 6.1.0"
-
-  name_prefix        = "ecs-fargate-example"
-  vpc_id             = module.networking.cashmoney_vpc_id
-  private_subnet_ids = module.networking.private_subnet_ids
-
-  cluster_id = aws_ecs_cluster.cluster.id
-
-  task_container_image   = "marcincuber/2048-game:latest"
-  task_definition_cpu    = 256
-  task_definition_memory = 512
-
-  task_container_port             = 80
-  task_container_assign_public_ip = true
-
-  target_groups = [
-    {
-      target_group_name = "tg-fargate-example"
-      container_port    = 80
-    }
-  ]
-
-  health_check = {
-    port = "traffic-port"
-    path = "/"
-  }
-
-  tags = {
-    Environment = "test"
-    Project     = "Test"
-  }
-}
-*/
