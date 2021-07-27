@@ -12,7 +12,7 @@ module "user_website" {
 # Microservice ECS cluster services
 
 resource "aws_ecs_cluster" "microservices" {
-  name = "cashmoney-microservices"
+  name = var.ms_cluster_name
 
   setting {
     name  = "containerInsights"
@@ -21,7 +21,7 @@ resource "aws_ecs_cluster" "microservices" {
 }
 
 resource "aws_iam_role" "ecsExecution" {
-  name               = "ecsExecutionRole"
+  name               = var.ecs_task_execution_role_name
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
