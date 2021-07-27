@@ -1,0 +1,24 @@
+version: "3"
+x-aws-vpc: "vpc-0366873350b93b913"
+x-aws-cluster: "cashmoney-microservices"
+services:
+    adminui:
+        image: "jpierrel/cashmoney:adminUI"
+        ports:
+            - "80:80" 
+    userui:
+        image: "jpierrel/cashmoney:userUI"
+        ports:
+            - "3000:3000" 
+    userms:
+        image: "jpierrel/cashmoney:userMS"
+        ports:
+            - "8000:8000"
+    loansms:
+        image: "jpierrel/cashmoney:loansMS"
+        ports:
+            - "8020:8020"
+    branchesms:
+        image: "jpierrel/cashmoney:branchesMS"
+        ports:
+            - "8080:8080"
