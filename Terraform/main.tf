@@ -59,6 +59,25 @@ resource "aws_lb" "alb" {
 }
 
 module "user-ms" {
+  source = "./modules/microservice-shell"
+
+  service_name = "user-ms"
+}
+
+module "loans-ms" {
+  source = "./modules/microservice-shell"
+
+  service_name = "loans-ms"
+}
+
+module "branches-ms" {
+  source = "./modules/microservice-shell"
+
+  service_name = "branches-ms"
+}
+
+/*
+module "user-ms" {
   source = "./modules/microservice"
 
   cashmoney_vpc_id   = module.networking.cashmoney_vpc_id
@@ -111,3 +130,4 @@ module "branches-ms" {
     module.networking
   ]
 }
+*/
