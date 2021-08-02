@@ -1,31 +1,32 @@
+#Vanilla Microservice Template for CloudFormation
 AWSTemplateFormatVersion: 2010-09-09
 Resources:
   #CloudMap
   CloudMap:
     Properties:
-      Description: Service Map for Docker Compose project docker-compose
-      Name: docker-compose.local
-      Vpc: vpc-3661fb5d
+      Description: Service Map for Docker Compose project docker-compose #Edit
+      Name: docker-compose.local #Edit
+      Vpc: vpc-3661fb5d #Change?
     Type: AWS::ServiceDiscovery::PrivateDnsNamespace
     
   #Cluster
-  Cluster:
+  Cluster: #Update
     Properties:
-      ClusterName: docker-compose
+      ClusterName: docker-compose #Edit
       Tags:
-      - Key: com.docker.compose.project
-        Value: docker-compose
+      - Key: com.docker.compose.project #Parameterize
+        Value: docker-compose #Parameterize
     Type: AWS::ECS::Cluster
    
   #Default Network Security Group
-  DefaultNetwork:
+  DefaultNetwork: #Update
     Properties:
       GroupDescription: docker-compose Security Group for default network
       Tags:
-      - Key: com.docker.compose.project
-        Value: docker-compose
-      - Key: com.docker.compose.network
-        Value: docker-compose_default
+      - Key: com.docker.compose.project #Parameterize
+        Value: docker-compose #Parameterize
+      - Key: com.docker.compose.network #Parameterize
+        Value: docker-compose_default #Parameterize
       VpcId: vpc-3661fb5d #Change?
     Type: AWS::EC2::SecurityGroup
     
@@ -33,7 +34,7 @@ Resources:
   DefaultIngress:
     Properties:
       CidrIp: 0.0.0.0/0
-      Description: branchesms:8080/ on default network
+      Description: branchesms:8080/ on default network #Edit
       FromPort: 8080 #Parameterize
       GroupId:
         Ref: DefaultNetwork
@@ -55,7 +56,7 @@ Resources:
   #LogGroup
   LogGroup:
     Properties:
-      LogGroupName: /docker-compose/docker-compose
+      LogGroupName: /docker-compose/docker-compose #Change?
     Type: AWS::Logs::LogGroup
     
   #LoadBalancer
@@ -69,8 +70,8 @@ Resources:
       - subnet-e4a45f99
       - subnet-d223a1b9
       Tags:
-      - Key: com.docker.compose.project
-        Value: docker-compose
+      - Key: com.docker.compose.project #Parameterize
+        Value: docker-compose #Parameterize
       Type: application
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
 
@@ -95,8 +96,8 @@ Resources:
       Port: 8080 #Parameterize
       Protocol: HTTP
       Tags:
-      - Key: com.docker.compose.project
-        Value: docker-compose
+      - Key: com.docker.compose.project #Parameterize
+        Value: docker-compose #Parameterize
       TargetType: ip
       VpcId: vpc-3661fb5d #Change?
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -140,9 +141,9 @@ Resources:
           - BranchesmsServiceDiscoveryEntry #Change
           - Arn
       Tags:
-      - Key: com.docker.compose.project
-        Value: docker-compose
-      - Key: com.docker.compose.service
+      - Key: com.docker.compose.project #Parameterize
+        Value: docker-compose #Parameterize
+      - Key: com.docker.compose.service #Parameterize
         Value: branchesms #Parameterize
       TaskDefinition:
         Ref: BranchesmsTaskDefinition #Change
@@ -170,7 +171,7 @@ Resources:
       ContainerDefinitions:
       - Command:
         - us-east-2.compute.internal
-        - docker-compose.local
+        - docker-compose.local #Change?
         Essential: false
         Image: docker/ecs-searchdomain-sidecar:1.0
         LogConfiguration:
@@ -186,7 +187,7 @@ Resources:
         - Condition: SUCCESS
           ContainerName: Branchesms_ResolvConf_InitContainer #Parameterize
         Essential: true
-        Image: 202447729588.dkr.ecr.us-east-2.amazonaws.com/branches-ms:latest@sha256:7891184f31d3407182bcd9453da92017f2f846429a9f1312d8ff8a87af757173
+        Image: 202447729588.dkr.ecr.us-east-2.amazonaws.com/branches-ms:latest@sha256:7891184f31d3407182bcd9453da92017f2f846429a9f1312d8ff8a87af757173 #Parameterize?
         LinuxParameters: {}
         LogConfiguration:
           LogDriver: awslogs
@@ -195,7 +196,7 @@ Resources:
               Ref: LogGroup
             awslogs-region:
               Ref: AWS::Region
-            awslogs-stream-prefix: docker-compose
+            awslogs-stream-prefix: docker-compose #Change?
         Name: branchesms #Parameterize
         PortMappings:
         - ContainerPort: 8080 #Parameterize
@@ -203,7 +204,7 @@ Resources:
       Cpu: "256"
       ExecutionRoleArn:
         Ref: BranchesmsTaskExecutionRole #Change
-      Family: docker-compose-branchesms
+      Family: docker-compose-branchesms #Change?
       Memory: "512"
       NetworkMode: awsvpc
       RequiresCompatibilities:
@@ -226,8 +227,8 @@ Resources:
       - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
       - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
       Tags:
-      - Key: com.docker.compose.project
-        Value: docker-compose
-      - Key: com.docker.compose.service
+      - Key: com.docker.compose.project #Parameterize
+        Value: docker-compose #Parameterize
+      - Key: com.docker.compose.service #Parameterize
         Value: branchesms #Parameterize
     Type: AWS::IAM::Role
