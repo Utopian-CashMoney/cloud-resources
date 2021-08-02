@@ -1,22 +1,20 @@
 version: "3"
+#x-aws-vpc: "vpc-0366873350b93b913" #Variablize
+#x-aws-cluster: "cashmoney" #Change to cashmoney
+#x-aws-loadbalancer: "Test" #Change to cashmoney alb
 services:
-    adminui:
-        image: "jpierrel/cashmoney:adminUI"
-        ports:
-            - "8001:80" 
-    userui:
-        image: "jpierrel/cashmoney:userUI"
-        ports:
-            - "8002:3000" 
     userms:
-        image: "jpierrel/cashmoney:userMS"
+        image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/user-ms"
         ports:
-            - "8000:8000"
+            - target: 8000
+              x-aws-protocol: http
     loansms:
-        image: "jpierrel/cashmoney:loansMS"
+        image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/loans-ms"
         ports:
-            - "8080:8080"
+            - target: 8020
+              x-aws-protocol: http
     branchesms:
-        image: "jpierrel/cashmoney:branchesMS"
+        image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/branches-ms"
         ports:
-            - "8080:8080"
+            - target: 8080
+              x-aws-protocol: http
