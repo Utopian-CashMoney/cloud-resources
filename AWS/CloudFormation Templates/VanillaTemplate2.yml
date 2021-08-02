@@ -1,19 +1,19 @@
 AWSTemplateFormatVersion: 2010-09-09
 Resources:
-  Branchesms8080Listener:
+  BranchesmsListener:
     Properties:
       DefaultActions:
       - ForwardConfig:
           TargetGroups:
           - TargetGroupArn:
-              Ref: Branchesms8080TargetGroup
+              Ref: BranchesmsTargetGroup
         Type: forward
       LoadBalancerArn:
         Ref: LoadBalancer
       Port: 8080
       Protocol: HTTP
     Type: AWS::ElasticLoadBalancingV2::Listener
-  Branchesms8080TargetGroup:
+  BranchesmsTargetGroup:
     Properties:
       Port: 8080
       Protocol: HTTP
@@ -25,7 +25,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
   BranchesmsService:
     DependsOn:
-    - Branchesms8080Listener
+    - BranchesmsListener
     Properties:
       Cluster:
         Fn::GetAtt:
@@ -42,7 +42,7 @@ Resources:
       - ContainerName: branchesms
         ContainerPort: 8080
         TargetGroupArn:
-          Ref: Branchesms8080TargetGroup
+          Ref: BranchesmsTargetGroup
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
