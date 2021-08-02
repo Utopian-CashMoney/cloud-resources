@@ -1,5 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 Resources:
+
+  #Listener
   BranchesmsListener:
     Properties:
       DefaultActions:
@@ -13,6 +15,8 @@ Resources:
       Port: 8080
       Protocol: HTTP
     Type: AWS::ElasticLoadBalancingV2::Listener
+   
+  #Target Group
   BranchesmsTargetGroup:
     Properties:
       Port: 8080
@@ -23,6 +27,8 @@ Resources:
       TargetType: ip
       VpcId: vpc-3661fb5d
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    
+  #Service/Microservice
   BranchesmsService:
     DependsOn:
     - BranchesmsListener
@@ -68,6 +74,8 @@ Resources:
       TaskDefinition:
         Ref: BranchesmsTaskDefinition
     Type: AWS::ECS::Service
+    
+  #Service Discovery Entry in Cloud Map
   BranchesmsServiceDiscoveryEntry:
     Properties:
       Description: '"branchesms" service discovery entry in Cloud Map'
@@ -82,6 +90,8 @@ Resources:
       NamespaceId:
         Ref: CloudMap
     Type: AWS::ServiceDiscovery::Service
+   
+  #Task Definition
   BranchesmsTaskDefinition:
     Properties:
       ContainerDefinitions:
@@ -126,6 +136,8 @@ Resources:
       RequiresCompatibilities:
       - FARGATE
     Type: AWS::ECS::TaskDefinition
+   
+  #Task Execution Role
   BranchesmsTaskExecutionRole:
     Properties:
       AssumeRolePolicyDocument:
@@ -146,12 +158,16 @@ Resources:
       - Key: com.docker.compose.service
         Value: branchesms
     Type: AWS::IAM::Role
+  
+  #CloudMap
   CloudMap:
     Properties:
       Description: Service Map for Docker Compose project docker-compose
       Name: docker-compose.local
       Vpc: vpc-3661fb5d
     Type: AWS::ServiceDiscovery::PrivateDnsNamespace
+    
+   #Cluster
   Cluster:
     Properties:
       ClusterName: docker-compose
@@ -159,16 +175,20 @@ Resources:
       - Key: com.docker.compose.project
         Value: docker-compose
     Type: AWS::ECS::Cluster
-  Default8000Ingress:
+   
+  #Default Ingress
+  DefaultIngress:
     Properties:
       CidrIp: 0.0.0.0/0
-      Description: userms:8000/ on default network
-      FromPort: 8000
+      Description: branchesms:8080/ on default network
+      FromPort: 8080
       GroupId:
         Ref: DefaultNetwork
       IpProtocol: "-1"
-      ToPort: 8000
+      ToPort: 8080
     Type: AWS::EC2::SecurityGroupIngress
+    
+  #Default Network Security Group
   DefaultNetwork:
     Properties:
       GroupDescription: docker-compose Security Group for default network
@@ -179,6 +199,8 @@ Resources:
         Value: docker-compose_default
       VpcId: vpc-3661fb5d
     Type: AWS::EC2::SecurityGroup
+    
+   #Default Network Ingress
   DefaultNetworkIngress:
     Properties:
       Description: Allow communication within network default
@@ -188,6 +210,8 @@ Resources:
       SourceSecurityGroupId:
         Ref: DefaultNetwork
     Type: AWS::EC2::SecurityGroupIngress
+    
+  #LoadBalancer
   LoadBalancer:
     Properties:
       Scheme: internet-facing
@@ -202,6 +226,8 @@ Resources:
         Value: docker-compose
       Type: application
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    
+  #LogGroup
   LogGroup:
     Properties:
       LogGroupName: /docker-compose/docker-compose
