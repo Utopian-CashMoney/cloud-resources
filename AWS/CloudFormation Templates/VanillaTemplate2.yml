@@ -1,37 +1,110 @@
 AWSTemplateFormatVersion: 2010-09-09
 Resources:
+  #CloudMap
+  CloudMap:
+    Properties:
+      Description: Service Map for Docker Compose project docker-compose
+      Name: docker-compose.local
+      Vpc: vpc-3661fb5d
+    Type: AWS::ServiceDiscovery::PrivateDnsNamespace
+    
+  #Cluster
+  Cluster:
+    Properties:
+      ClusterName: docker-compose
+      Tags:
+      - Key: com.docker.compose.project
+        Value: docker-compose
+    Type: AWS::ECS::Cluster
+   
+  #Default Network Security Group
+  DefaultNetwork:
+    Properties:
+      GroupDescription: docker-compose Security Group for default network
+      Tags:
+      - Key: com.docker.compose.project
+        Value: docker-compose
+      - Key: com.docker.compose.network
+        Value: docker-compose_default
+      VpcId: vpc-3661fb5d #Change?
+    Type: AWS::EC2::SecurityGroup
+    
+  #Default Ingress
+  DefaultIngress:
+    Properties:
+      CidrIp: 0.0.0.0/0
+      Description: branchesms:8080/ on default network
+      FromPort: 8080 #Parameterize
+      GroupId:
+        Ref: DefaultNetwork
+      IpProtocol: "-1"
+      ToPort: 8080 #Parameterize
+    Type: AWS::EC2::SecurityGroupIngress
+    
+  #Default Network Ingress
+  DefaultNetworkIngress:
+    Properties:
+      Description: Allow communication within network default
+      GroupId:
+        Ref: DefaultNetwork
+      IpProtocol: "-1"
+      SourceSecurityGroupId:
+        Ref: DefaultNetwork
+    Type: AWS::EC2::SecurityGroupIngress
+    
+  #LogGroup
+  LogGroup:
+    Properties:
+      LogGroupName: /docker-compose/docker-compose
+    Type: AWS::Logs::LogGroup
+    
+  #LoadBalancer
+  LoadBalancer:
+    Properties:
+      Scheme: internet-facing
+      SecurityGroups:
+      - Ref: DefaultNetwork
+      Subnets:
+      - subnet-ef1e3da3
+      - subnet-e4a45f99
+      - subnet-d223a1b9
+      Tags:
+      - Key: com.docker.compose.project
+        Value: docker-compose
+      Type: application
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
 
-  #Listener
-  BranchesmsListener:
+  #Microservice Listener
+  BranchesmsListener: #Change
     Properties:
       DefaultActions:
       - ForwardConfig:
           TargetGroups:
           - TargetGroupArn:
-              Ref: BranchesmsTargetGroup
+              Ref: BranchesmsTargetGroup #Change
         Type: forward
       LoadBalancerArn:
         Ref: LoadBalancer
-      Port: 8080
+      Port: 8080 #Parameterize
       Protocol: HTTP
     Type: AWS::ElasticLoadBalancingV2::Listener
    
-  #Target Group
-  BranchesmsTargetGroup:
+  #Microservice Target Group
+  BranchesmsTargetGroup: #Change
     Properties:
-      Port: 8080
+      Port: 8080 #Parameterize
       Protocol: HTTP
       Tags:
       - Key: com.docker.compose.project
         Value: docker-compose
       TargetType: ip
-      VpcId: vpc-3661fb5d
+      VpcId: vpc-3661fb5d #Change?
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     
-  #Service/Microservice
-  BranchesmsService:
+  #Microservice Service Declaration
+  BranchesmsService: #Change
     DependsOn:
-    - BranchesmsListener
+    - BranchesmsListener #Change
     Properties:
       Cluster:
         Fn::GetAtt:
@@ -45,15 +118,15 @@ Resources:
       DesiredCount: 1
       LaunchType: FARGATE
       LoadBalancers:
-      - ContainerName: branchesms
-        ContainerPort: 8080
+      - ContainerName: branchesms #Parameterize
+        ContainerPort: 8080 #Parameterize
         TargetGroupArn:
-          Ref: BranchesmsTargetGroup
+          Ref: BranchesmsTargetGroup #Change
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           SecurityGroups:
-          - Ref: DefaultNetwork
+          - Ref: DefaultNetwork #Change?
           Subnets:
           - subnet-ef1e3da3
           - subnet-e4a45f99
@@ -64,21 +137,21 @@ Resources:
       ServiceRegistries:
       - RegistryArn:
           Fn::GetAtt:
-          - BranchesmsServiceDiscoveryEntry
+          - BranchesmsServiceDiscoveryEntry #Change
           - Arn
       Tags:
       - Key: com.docker.compose.project
         Value: docker-compose
       - Key: com.docker.compose.service
-        Value: branchesms
+        Value: branchesms #Parameterize
       TaskDefinition:
-        Ref: BranchesmsTaskDefinition
+        Ref: BranchesmsTaskDefinition #Change
     Type: AWS::ECS::Service
     
-  #Service Discovery Entry in Cloud Map
-  BranchesmsServiceDiscoveryEntry:
+  #Microservice Service Discovery Entry in Cloud Map
+  BranchesmsServiceDiscoveryEntry: #Change
     Properties:
-      Description: '"branchesms" service discovery entry in Cloud Map'
+      Description: '"branchesms" service discovery entry in Cloud Map' #Change
       DnsConfig:
         DnsRecords:
         - TTL: 60
@@ -86,13 +159,13 @@ Resources:
         RoutingPolicy: MULTIVALUE
       HealthCheckCustomConfig:
         FailureThreshold: 1
-      Name: branchesms
+      Name: branchesms #Parameterize
       NamespaceId:
         Ref: CloudMap
     Type: AWS::ServiceDiscovery::Service
    
-  #Task Definition
-  BranchesmsTaskDefinition:
+  #Microservice Task Definition
+  BranchesmsTaskDefinition: #Change
     Properties:
       ContainerDefinitions:
       - Command:
@@ -108,10 +181,10 @@ Resources:
             awslogs-region:
               Ref: AWS::Region
             awslogs-stream-prefix: docker-compose
-        Name: Branchesms_ResolvConf_InitContainer
+        Name: Branchesms_ResolvConf_InitContainer #Parameterize
       - DependsOn:
         - Condition: SUCCESS
-          ContainerName: Branchesms_ResolvConf_InitContainer
+          ContainerName: Branchesms_ResolvConf_InitContainer #Parameterize
         Essential: true
         Image: 202447729588.dkr.ecr.us-east-2.amazonaws.com/branches-ms:latest@sha256:7891184f31d3407182bcd9453da92017f2f846429a9f1312d8ff8a87af757173
         LinuxParameters: {}
@@ -123,13 +196,13 @@ Resources:
             awslogs-region:
               Ref: AWS::Region
             awslogs-stream-prefix: docker-compose
-        Name: branchesms
+        Name: branchesms #Parameterize
         PortMappings:
-        - ContainerPort: 8080
-          HostPort: 8080
+        - ContainerPort: 8080 #Parameterize
+          HostPort: 8080 #Parameterize
       Cpu: "256"
       ExecutionRoleArn:
-        Ref: BranchesmsTaskExecutionRole
+        Ref: BranchesmsTaskExecutionRole #Change
       Family: docker-compose-branchesms
       Memory: "512"
       NetworkMode: awsvpc
@@ -137,8 +210,8 @@ Resources:
       - FARGATE
     Type: AWS::ECS::TaskDefinition
    
-  #Task Execution Role
-  BranchesmsTaskExecutionRole:
+  #Microservice Task Execution Role
+  BranchesmsTaskExecutionRole: #Change
     Properties:
       AssumeRolePolicyDocument:
         Statement:
@@ -156,79 +229,5 @@ Resources:
       - Key: com.docker.compose.project
         Value: docker-compose
       - Key: com.docker.compose.service
-        Value: branchesms
+        Value: branchesms #Parameterize
     Type: AWS::IAM::Role
-  
-  #CloudMap
-  CloudMap:
-    Properties:
-      Description: Service Map for Docker Compose project docker-compose
-      Name: docker-compose.local
-      Vpc: vpc-3661fb5d
-    Type: AWS::ServiceDiscovery::PrivateDnsNamespace
-    
-   #Cluster
-  Cluster:
-    Properties:
-      ClusterName: docker-compose
-      Tags:
-      - Key: com.docker.compose.project
-        Value: docker-compose
-    Type: AWS::ECS::Cluster
-   
-  #Default Ingress
-  DefaultIngress:
-    Properties:
-      CidrIp: 0.0.0.0/0
-      Description: branchesms:8080/ on default network
-      FromPort: 8080
-      GroupId:
-        Ref: DefaultNetwork
-      IpProtocol: "-1"
-      ToPort: 8080
-    Type: AWS::EC2::SecurityGroupIngress
-    
-  #Default Network Security Group
-  DefaultNetwork:
-    Properties:
-      GroupDescription: docker-compose Security Group for default network
-      Tags:
-      - Key: com.docker.compose.project
-        Value: docker-compose
-      - Key: com.docker.compose.network
-        Value: docker-compose_default
-      VpcId: vpc-3661fb5d
-    Type: AWS::EC2::SecurityGroup
-    
-   #Default Network Ingress
-  DefaultNetworkIngress:
-    Properties:
-      Description: Allow communication within network default
-      GroupId:
-        Ref: DefaultNetwork
-      IpProtocol: "-1"
-      SourceSecurityGroupId:
-        Ref: DefaultNetwork
-    Type: AWS::EC2::SecurityGroupIngress
-    
-  #LoadBalancer
-  LoadBalancer:
-    Properties:
-      Scheme: internet-facing
-      SecurityGroups:
-      - Ref: DefaultNetwork
-      Subnets:
-      - subnet-ef1e3da3
-      - subnet-e4a45f99
-      - subnet-d223a1b9
-      Tags:
-      - Key: com.docker.compose.project
-        Value: docker-compose
-      Type: application
-    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-    
-  #LogGroup
-  LogGroup:
-    Properties:
-      LogGroupName: /docker-compose/docker-compose
-    Type: AWS::Logs::LogGroup
