@@ -95,7 +95,7 @@ Resources:
        TaskRoleArn: !Ref ContainerExecutionRole
        ContainerDefinitions:
          - Name: !Ref ApplicationName
-           Image: !Ref ECRRepositoryUri # This gets passed as param from ecs.json generated in buildspec
+           Image: !Ref ECRImageUri # This gets passed as param from ecs.json generated in buildspec
            PortMappings:
              - ContainerPort: 8080
            Essential: true
@@ -107,6 +107,36 @@ Resources:
                awslogs-region: !Ref AWS::Region
                awslogs-stream-prefix: ecs
                awslogs-create-group: 'true'
+
+   LoadBalancer:
+     DependsOn:
+     - DefaultNetwork
+     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+     Properties:
+       Scheme: internet-facing
+       SecurityGroups:
+       - Ref: DefaultNetwork
+         Subnets:
+         - subnet-ef1e3da3
+         - subnet-e4a45f99
+         - subnet-d223a1b9
+       Tags:
+       - Key: ApplicationName
+         Value: !Ref ApplicationName
+       - Key: ApplicationEnvironment
+         Value: !Ref ApplicationEnvironment
+       Type: application
+   DefaultNetwork:
+     Properties:
+       GroupDescription: docker-compose Security Group for default network
+       Tags:
+       - Key: com.docker.compose.project
+         Value: docker-compose
+       - Key: com.docker.compose.network
+         Value: docker-compose_default
+       VpcId: vpc-3661fb5d
+     Type: AWS::EC2::SecurityGroup
+
    Listener:
      Type: AWS::ElasticLoadBalancingV2::Listener
      Properties:
