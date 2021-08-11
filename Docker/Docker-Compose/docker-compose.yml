@@ -1,20 +1,20 @@
 version: "3"
-x-aws-vpc: "vpc-0366873350b93b913" #Variablize
-#x-aws-cluster: "arn:aws:ecs:us-east-2:202447729588:cluster/Cashmoney"
-x-aws-loadbalancer: "TestBalance" #Change to cashmoney alb
+#x-aws-vpc: "vpc-0366873350b93b913" - Needs to be Variablize
+#x-aws-cluster: "arn:aws:ecs:us-east-2:202447729588:cluster/Cashmoney" - Issues
+#x-aws-loadbalancer: "TestBalance" - Needs to be Variablized
 services:
     userms:
         image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/user-ms"
         ports:
             - target: 8000
               x-aws-protocol: http
-#    loansms:
-#        image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/loans-ms"
-#        ports:
-#            - target: 8020
-#              x-aws-protocol: http
-#    branchesms:
-#        image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/branches-ms"
-#        ports:
-#            - target: 8080
-#              x-aws-protocol: http
+    loansms:
+       image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/loans-ms"
+       ports:
+           - target: 8020
+             x-aws-protocol: http
+   branchesms:
+       image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/branches-ms"
+       ports:
+           - target: 8080
+             x-aws-protocol: http
