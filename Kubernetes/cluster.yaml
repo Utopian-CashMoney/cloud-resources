@@ -1,0 +1,48 @@
+#Cashmoney EKS ClusterConfig File
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: Cashmoney-Cluster
+  region: us-east-2
+
+vpc:
+  id: "vpc-0366873350b93b913"
+  cidr: "10.0.0.0/16"
+  subnets:
+    private:
+      cashmoney-private-1a:
+        id: "subnet-0af34aa2091ed769d"
+        cidr: "10.0.1.0/24"
+      cashmoney-private-1b:
+        id: "subnet-0263e7f6aae8c3227"
+        cidr: "10.0.2.0/24"
+    public:
+      cashmoney-public-1a:
+        id: "subnet-05f7b839ebc4b82d4"
+        cidr: "10.0.0.0/24"
+      cashmoney-public-1b:
+        id: "subnet-068c736beaa58701d"
+        cidr: "10.0.3.0/24"
+
+# Amazon EKS managed nodegroups is a feature that automates the provisioning and lifecycle management of nodes (EC2 instances)
+# for Amazon EKS Kubernetes clusters. ... Each node group launches an autoscaling group for your cluster, which can span multiple
+# AWS VPC availability zones and subnets for high-availability.
+nodeGroups:
+  - name: public-ng
+    instanceType: t2.medium
+    minSize: 1
+    maxSize: 3
+    desiredCapacity: 2
+    subnets:
+      - cashmoney-public-1a
+      - cashmoney-public-1b
+  #- name: private-ng
+    #instanceType: t2.medium
+    #minSize: 1
+    #maxSize: 3
+    #desiredCapacity: 2
+    #subnets:
+    #  - cashmoney-private-1a
+    #  - cashmoney-private-1b
+    #privateNetworking: true #Puts in private subnet

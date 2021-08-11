@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: branchesms-service
+  name: branchesms-service
+  namespace: development
+spec:
+  selector:
+    app: branchesms-dep
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: branchesms-dep
+  name: branchesms-dep
+  namespace: development
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: branchesms-dep
+  template:
+    metadata:
+      labels:
+        app: branchesms-dep
+    spec:
+      containers:
+      - image: 202447729588.dkr.ecr.us-east-2.amazonaws.com/branches-ms
+        name: branchesms-dep
+        ports:
+        - containerPort: 8080
