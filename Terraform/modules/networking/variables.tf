@@ -8,13 +8,13 @@ variable "vpc_cidr_block" {
 variable "subnet_zone_1" {
   type        = string
   description = "Subnet availability zone."
-  default     = "us-east-1a"
+  default     = "us-east-2a"
 }
 
 variable "subnet_zone_2" {
   type        = string
   description = "Subnet availability zone."
-  default     = "us-east-1b"
+  default     = "us-east-2b"
 }
 
 variable "subnet_cidr_block_public_1a" {
