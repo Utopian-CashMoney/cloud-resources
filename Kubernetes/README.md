@@ -1,4 +1,4 @@
-EKS Cluster (Note: Requires the eksctl cli tool)
+# EKS Cluster (Note: Requires the eksctl cli tool)
 
 1. How to Launch the Cluster
   eksctl create -f cluster.yaml
