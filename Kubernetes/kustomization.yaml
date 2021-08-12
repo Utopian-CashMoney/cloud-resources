@@ -1,0 +1,6 @@
+resources:
+    - adminui.yaml
+    - userui.yaml
+    - userms.yaml
+    - loansms.yaml
+    - branchesms.yaml
