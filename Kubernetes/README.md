@@ -22,4 +22,4 @@
   - loansms-service
   - userms-service
 7. How to tear Down a Cluster
-  eksctl delete -f cluster.yaml
+  - eksctl delete -f cluster.yaml
