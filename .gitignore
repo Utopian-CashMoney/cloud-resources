@@ -1,0 +1,5 @@
+
+Jenkins/*
+Terraform/.terraform.lock.hcl
+Terraform/.terraform/
+*.tfstate*

@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: loansms-service
+  name: loansms-service
+  namespace: development
+spec:
+  selector:
+    app: loansms-dep
+  ports:
+    - protocol: TCP
+      port: 8020
+      targetPort: 8020
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: loansms-dep
+  name: loansms-dep
+  namespace: development
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: loansms-dep
+  template:
+    metadata:
+      labels:
+        app: loansms-dep
+    spec:
+      containers:
+      - image: 202447729588.dkr.ecr.us-east-2.amazonaws.com/loans-ms
+        name: loansms-dep
+        ports:
+        - containerPort: 8020

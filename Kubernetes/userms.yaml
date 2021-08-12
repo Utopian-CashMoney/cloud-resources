@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: userms-service
+  name: userms-service
+  namespace: development
+spec:
+  selector:
+    app: userms-dep
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: userms-dep
+  name: userms-dep
+  namespace: development
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: userms-dep
+  template:
+    metadata:
+      labels:
+        app: userms-dep
+    spec:
+      containers:
+      - image: 202447729588.dkr.ecr.us-east-2.amazonaws.com/user-ms
+        name: userms-dep
+        ports:
+        - containerPort: 8000
