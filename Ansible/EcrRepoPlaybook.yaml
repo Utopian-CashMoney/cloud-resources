@@ -1,0 +1,14 @@
+---
+
+- name: ECR Repository Play
+  hosts: localhost
+  tasks:
+  - name: Branches MS Repository
+    community.aws.ecs_ecr:
+      name: branches-ms
+  - name: Loans MS Repository
+    community.aws.ecs_ecr:
+      name: loans-ms
+  - name: User MS Repository
+    community.aws.ecs_ecr:
+      name: user-ms
