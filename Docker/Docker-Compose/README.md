@@ -1,4 +1,4 @@
-Docker Compose with ECS
+# Docker Compose with ECS
 
 1. Configure AWS CLI with IAM User account
   - aws configure

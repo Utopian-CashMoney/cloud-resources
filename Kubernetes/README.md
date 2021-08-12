@@ -1,4 +1,4 @@
-EKS Cluster (Note: Requires the eksctl cli tool)
+# EKS Cluster (Note: Requires the eksctl cli tool)
 
 1. How to Launch the Cluster
   eksctl create -f cluster.yaml
@@ -22,4 +22,4 @@ EKS Cluster (Note: Requires the eksctl cli tool)
   - loansms-service
   - userms-service
 7. How to tear Down a Cluster
-  eksctl delete -f cluster.yaml
+  - eksctl delete -f cluster.yaml
