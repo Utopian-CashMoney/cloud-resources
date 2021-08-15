@@ -1,7 +1,7 @@
 # EKS Cluster (Note: Requires the eksctl cli tool)
 
 1. How to Launch the Cluster
-  - eksctl create -f cluster.yaml
+  - eksctl create cluster -f cluster.yaml
 2. Create a Development namespace
   - kubectl create -f dev-namespace.yaml
 3. Launch Microservice Deployments and services
