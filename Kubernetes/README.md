@@ -24,4 +24,4 @@
 7. Command to run kustomize (Compiles all .yaml files at once)
   - kubectl kustomize | kubectl apply -f -
 8. How to tear Down a Cluster
-  - eksctl delete -f cluster.yaml
+  - eksctl delete cluster -f cluster.yaml
