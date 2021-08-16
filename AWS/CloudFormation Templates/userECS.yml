@@ -40,7 +40,7 @@ Parameters:
   TargetGroup:
     Description: The Target Group
     Type: String
-    Default: arn:aws:elasticloadbalancing:us-east-2:202447729588:targetgroup/cashmoney-userms-8000/ca2206a9b5dc9c6b
+    Default: arn:aws:elasticloadbalancing:us-east-2:202447729588:targetgroup/userms-tg/5040aabd153ba80d
 
   Subnet:
     Description: The Subnet for the Microservice
