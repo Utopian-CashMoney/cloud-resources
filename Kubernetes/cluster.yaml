@@ -26,8 +26,7 @@ vpc:
         cidr: "10.0.3.0/24"
 
 # Amazon EKS managed nodegroups is a feature that automates the provisioning and lifecycle management of nodes (EC2 instances)
-# for Amazon EKS Kubernetes clusters. ... Each node group launches an autoscaling group for your cluster, which can span multiple
-# AWS VPC availability zones and subnets for high-availability.
+# for Amazon EKS Kubernetes clusters. ... Each node group launches an autoscaling group for your cluster, which can span multiple AWS VPC availability zones and subnets for high-availability.
 nodeGroups:
   - name: public-ng
     instanceType: t2.medium
