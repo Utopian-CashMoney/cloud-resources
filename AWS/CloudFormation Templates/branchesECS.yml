@@ -29,18 +29,17 @@ Parameters:
   EcrImageUri:
     Description: Full Uri for consumer docker image to run in container
     Type: String
-    Default: 202447729588.dkr.ecr.us-east-2.amazonaws.com/branches-ms
+    Default: '{{resolve:secretsmanager:Cashmoney:SecretString:branches-ms-uri}}'
 
   ExecutionRole:
     Description: The Execution Role
     Type: String
-
-    Default: arn:aws:iam::202447729588:role/ecsTaskExecutionRole
+    Default: '{{resolve:secretsmanager:Cashmoney:SecretString:TaskExecutionRole}}'
 
   TargetGroup:
     Description: The Target Group
     Type: String
-    Default: arn:aws:elasticloadbalancing:us-east-2:202447729588:targetgroup/branchesms-tg/b0eef4cc47c3c7a8
+    Default: '{{resolve:secretsmanager:Cashmoney:SecretString:branches-ms-tg}}'
 
   Subnet:
     Description: The Subnet for the Microservice

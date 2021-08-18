@@ -29,20 +29,19 @@ Parameters:
   EcrImageUri:
     Description: Full Uri for consumer docker image to run in container
     Type: String
-    Default: 202447729588.dkr.ecr.us-east-2.amazonaws.com/user-ms
+    Default: '{{resolve:secretsmanager:Cashmoney:SecretString:user-ms-uri}}'
 
-  ExecutionRole:
+  TaskExecutionRole:
     Description: The Execution Role
     Type: String
-
-    Default: arn:aws:iam::202447729588:role/ecsTaskExecutionRole
+    Default: '{{resolve:secretsmanager:Cashmoney:SecretString:TaskExecutionRole}}'
 
   TargetGroup:
     Description: The Target Group
     Type: String
-    Default: arn:aws:elasticloadbalancing:us-east-2:202447729588:targetgroup/userms-tg/5040aabd153ba80d
+    Default: '{{resolve:secretsmanager:Cashmoney:SecretString:user-ms-tg}}'
 
-  Subnet:
+  Subnet: #Needs to account for changing subnet values
     Description: The Subnet for the Microservice
     Type: AWS::EC2::Subnet::Id
     Default: subnet-05f7b839ebc4b82d4
@@ -74,7 +73,7 @@ Resources:
     Properties:
       Family: !Sub ${ApplicationName}-${ApplicationEnvironment}
       NetworkMode: awsvpc
-      ExecutionRoleArn: !Ref ExecutionRole
+      ExecutionRoleArn: !Ref TaskExecutionRole
       TaskRoleArn: !Ref ContainerExecutionRole
       RequiresCompatibilities:
         - FARGATE
