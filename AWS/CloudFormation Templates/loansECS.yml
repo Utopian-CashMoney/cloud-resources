@@ -31,7 +31,7 @@ Parameters:
     Type: String
     Default: '{{resolve:secretsmanager:Cashmoney:SecretString:loans-ms-uri}}'
 
-  ExecutionRole:
+  TaskExecutionRole:
     Description: The Execution Role
     Type: String
     Default: '{{resolve:secretsmanager:Cashmoney:SecretString:TaskExecutionRole}}'
@@ -54,6 +54,7 @@ Resources:
       DesiredCount: !Ref DesiredCount
       TaskDefinition: !Ref TaskDefinition
       LaunchType: FARGATE
+      HealthCheckGracePeriodSeconds: 300
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
@@ -73,7 +74,7 @@ Resources:
     Properties:
       Family: !Sub ${ApplicationName}-${ApplicationEnvironment}
       NetworkMode: awsvpc
-      ExecutionRoleArn: !Ref ExecutionRole
+      ExecutionRoleArn: !Ref TaskExecutionRole
       TaskRoleArn: !Ref ContainerExecutionRole
       RequiresCompatibilities:
         - FARGATE
@@ -87,6 +88,8 @@ Resources:
           Essential: true
           PortMappings:
             - ContainerPort: !Ref PortNumber
+              HostPort: !Ref PortNumber
+              Protocol: TCP
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -114,6 +117,7 @@ Resources:
             Value: !Ref ApplicationName
           - Key: ApplicationEnvironment
             Value: !Ref ApplicationEnvironment
+
 
   #Cloudwatch Logs
   CloudWatchLogsGroup:
