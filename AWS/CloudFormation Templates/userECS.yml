@@ -41,10 +41,15 @@ Parameters:
     Type: String
     Default: '{{resolve:secretsmanager:Cashmoney:SecretString:user-ms-tg}}'
 
-  Subnet: #Needs to account for changing subnet values
+  Subnet:
     Description: The Subnet for the Microservice
     Type: AWS::EC2::Subnet::Id
-    Default: subnet-05f7b839ebc4b82d4
+    Default: 'subnet-05f7b839ebc4b82d4'
+
+  SecurityGroup:
+    Description: The Security Group for Microservice
+    Type: AWS::EC2::SecurityGroup::Id
+    Default: 'sg-012f39c61ee1f4b41'
 
 Resources:
   Service:
@@ -60,6 +65,8 @@ Resources:
           AssignPublicIp: ENABLED
           Subnets:
             - !Ref Subnet
+          SecurityGroups:
+            - !Ref SecurityGroup
       DeploymentConfiguration:
         MinimumHealthyPercent: 100
         MaximumPercent: 200
