@@ -3,3 +3,4 @@ Jenkins/*
 Terraform/.terraform.lock.hcl
 Terraform/.terraform/
 *.tfstate*
+Docker/Docker-Compose/.env

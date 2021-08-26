@@ -1,21 +1,22 @@
 version: "3"
-#x-aws-vpc: "vpc-0366873350b93b913" - Needs to be Variablize
-#x-aws-cluster: "arn:aws:ecs:..." - Issues
-#x-aws-loadbalancer: "TestBalance" - Needs to be Variablized
+#x-aws-vpc: <Defines VPC using VPC id>
+#x-aws-cluster: <Defines ECS cluster using cluster ARN>
+#x-aws-loadbalancer: <Defines ALB using ALB name>
+
+#All Services pull from .env file
 services:
     userms:
-       image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/user-ms"
+       image: "${userImage}"
        ports:
-           - target: 8000
+           - target: ${userPort}
              x-aws-protocol: http
-
     loansms:
-       image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/loans-ms"
+       image: "${loansImage}"
        ports:
-           - target: 8020
+           - target: ${loansPort}
              x-aws-protocol: http
     branchesms:
-       image: "202447729588.dkr.ecr.us-east-2.amazonaws.com/branches-ms"
+       image: ${branchesImage}
        ports:
-           - target: 8080
+           - target: ${branchesPort}
              x-aws-protocol: http
