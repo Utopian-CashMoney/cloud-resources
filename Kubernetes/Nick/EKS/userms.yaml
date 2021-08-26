@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ucm-microservices
+  labels:
+    app: microservices
+spec:
+  containers:
+    - name: userms
+      image: 202447729588.dkr.ecr.us-east-1.amazonaws.com/user-ms
+      ports:
+        - containerPort: 8000

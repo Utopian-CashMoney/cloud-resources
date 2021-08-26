@@ -1,0 +1,4 @@
+resources:
+    - branchesms.yaml
+    - loansms.yaml
+    - userms.yaml
