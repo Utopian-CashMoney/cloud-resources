@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  user_ms:
+    image: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/user-ms"
+    init: true
+    ports:
+      - target: 8000
+        x-aws-protocol: http
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 2048M
+  loans_ms:
+    image: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/loans-ms"
+    init: true
+    ports:
+      - target: 8000
+        x-aws-protocol: http
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 2048M
+  branches_ms:
+    image: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/branches-ms"
+    init: true
+    ports:
+      - target: 8000
+        x-aws-protocol: http
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 2048M

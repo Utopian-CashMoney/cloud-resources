@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: loansms
+  name: loansms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loansms
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: loansms
+    spec:
+      containers:
+      - image: ucm-loansms:latest
+        name: loansms
+        imagePullPolicy: Never
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: loansms
+  name: loansms
+spec:
+  ports:
+  - name: 8020-8020
+    port: 8020
+    protocol: TCP
+    targetPort: 8020
+  selector:
+    app: loansms
+  type: ClusterIP
+status:
+  loadBalancer: {}

@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  user_ms:
+    image: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/user-ms"
+    ports:
+      - 8000:8000
+  loans_ms:
+    image: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/loans-ms"
+    ports:
+      - 8020:8020
+  branches_ms:
+    image: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/branches-ms"
+    ports:
+      - 8080:8080
