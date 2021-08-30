@@ -5,4 +5,8 @@ resource "aws_lb_target_group" "target-group" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.cashmoney_vpc_id
+
+  health_check {
+    path = "/actuator/info"
+  }
 }
