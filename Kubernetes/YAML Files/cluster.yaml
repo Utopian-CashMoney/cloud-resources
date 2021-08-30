@@ -25,8 +25,6 @@ vpc:
         id: "subnet-068c736beaa58701d"
         cidr: "10.0.3.0/24"
 
-# Amazon EKS managed nodegroups is a feature that automates the provisioning and lifecycle management of nodes (EC2 instances)
-# for Amazon EKS Kubernetes clusters. ... Each node group launches an autoscaling group for your cluster, which can span multiple AWS VPC availability zones and subnets for high-availability.
 nodeGroups:
   - name: public-ng
     instanceType: t2.medium
@@ -36,12 +34,3 @@ nodeGroups:
     subnets:
       - cashmoney-public-1a
       - cashmoney-public-1b
-  #- name: private-ng
-    #instanceType: t2.medium
-    #minSize: 1
-    #maxSize: 3
-    #desiredCapacity: 2
-    #subnets:
-    #  - cashmoney-private-1a
-    #  - cashmoney-private-1b
-    #privateNetworking: true #Puts in private subnet
