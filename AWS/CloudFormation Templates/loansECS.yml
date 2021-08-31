@@ -89,7 +89,7 @@ Resources:
       Cpu: '256'
       ContainerDefinitions:
         - Name: !Ref ApplicationName
-          Essential: true
+          #Essential: true
           Image: !Ref EcrImageUri
           Memory: 512
           Essential: true
