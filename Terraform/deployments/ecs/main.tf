@@ -1,6 +1,9 @@
 
 module "networking" {
   source = "../../modules/networking"
+
+  subnet_zone_1 = "${var.aws_region}a"
+  subnet_zone_2 = "${var.aws_region}b"
 }
 
 module "load_balancer" {
