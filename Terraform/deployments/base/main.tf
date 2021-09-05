@@ -9,6 +9,7 @@ module "networking" {
 module "load_balancer" {
   source = "../../modules/load-balancer"
 
+  cashmoney_vpc      = module.networking.cashmoney_vpc
   private_subnet_ids = module.networking.private_subnet_ids
 }
 

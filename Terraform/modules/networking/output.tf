@@ -1,6 +1,6 @@
 
-output "cashmoney_vpc_id" {
-  value = aws_vpc.cashmoney_vpc.id
+output "cashmoney_vpc" {
+  value = aws_vpc.cashmoney_vpc
 }
 
 output "private_subnet_ids" {

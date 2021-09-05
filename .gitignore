@@ -5,3 +5,4 @@ Terraform/.terraform/
 *.tfstate*
 Docker/Docker-Compose/.env
 *.terraform*
+Terraform/deployments/base/.env
