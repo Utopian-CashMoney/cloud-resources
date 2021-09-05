@@ -26,7 +26,7 @@ EOT
 }
 
 resource "local_file" "aws_env_file" {
-  filename = "../../../Docker/Docker-Nick/ECS/.env"
+  filename = "../../../Docker/Docker-Nick/ecs-ucm/.env"
 
   content = local.docker_env_file
 }

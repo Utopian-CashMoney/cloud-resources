@@ -1,7 +1,12 @@
 
 variable "cashmoney_vpc" {
-  type = any
+  type        = any
   description = "Main CashMoney VPC."
+}
+
+variable "public_subnet_ids" {
+  type        = list(string)
+  description = "Public Subnets of the cashmoney VPC."
 }
 
 variable "private_subnet_ids" {
