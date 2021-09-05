@@ -1,0 +1,41 @@
+version: "3.9"
+x-aws-vpc: ${ECS_VPC_ID}
+x-aws-loadbalancer: arn:aws:elasticloadbalancing:${AWS_REGION}:${AWS_ACCOUNT_ID}:loadbalancer/${ECS_ALB_ARN_AFFIX}
+x-aws-cluster: arn:aws:ecs:${AWS_REGION}:${AWS_ACCOUNT_ID}:cluster/${ECS_CLUSTER_NAME}
+services:
+  user_ms:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/user-ms
+    init: true
+    ports:
+      - target: 8000
+        published: 8000
+        x-aws-protocol: http
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 2048M
+  loans_ms:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/loans-ms
+    init: true
+    ports:
+      - target: 8020
+        published: 8020
+        x-aws-protocol: http
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 2048M
+  branches_ms:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/branches-ms
+    init: true
+    ports:
+      - target: 8080
+        published: 8080
+        x-aws-protocol: http
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 2048M
