@@ -1,0 +1,131 @@
+Description: ECS User microservice template
+Parameters:
+
+  ApplicationEnvironment:
+    Description: The Application Environment
+    Type: String
+    Default: dev
+
+  ApplicationName:
+    Description: The Application Name
+    Type: String
+    Default: user-ms
+
+  Cluster:
+    Description: ECS Cluster ID that this service should run on
+    Type: String
+    Default: cashmoney
+
+  DesiredCount:
+    Description: How many instances of this task should we run across our cluster
+    Type: Number
+    Default: 2
+
+  PortNumber:
+    Description: Host port for the microservice
+    Type: Number
+    Default: 8000
+
+  EcrImageUri:
+    Description: Full Uri for consumer docker image to run in container
+    Type: String
+    Default: '{{resolve:secretsmanager:Cashmoney:SecretString:user-ms-uri}}'
+
+  TaskExecutionRole:
+    Description: The Execution Role
+    Type: String
+    Default: '{{resolve:secretsmanager:Cashmoney:SecretString:TaskExecutionRole}}'
+
+  TargetGroup:
+    Description: The Target Group
+    Type: String
+    Default: '{{resolve:secretsmanager:Cashmoney:SecretString:user-ms-tg}}'
+
+  Subnet:
+    Description: The Subnet for the Microservice
+    Type: AWS::EC2::Subnet::Id
+    Default: 'subnet-05f7b839ebc4b82d4'
+
+  SecurityGroup:
+    Description: The Security Group for Microservice
+    Type: AWS::EC2::SecurityGroup::Id
+    Default: 'sg-012f39c61ee1f4b41'
+
+Resources:
+  Service:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      DesiredCount: !Ref DesiredCount
+      TaskDefinition: !Ref TaskDefinition
+      LaunchType: FARGATE
+      HealthCheckGracePeriodSeconds: 300
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED
+          Subnets:
+            - !Ref Subnet
+          SecurityGroups:
+            - !Ref SecurityGroup
+      DeploymentConfiguration:
+        MinimumHealthyPercent: 100
+        MaximumPercent: 200
+      LoadBalancers:
+        - ContainerName: !Ref ApplicationName
+          ContainerPort: !Ref PortNumber
+          TargetGroupArn: !Ref TargetGroup
+
+  #ECS Task Definition
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub ${ApplicationName}-${ApplicationEnvironment}
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !Ref TaskExecutionRole
+      TaskRoleArn: !Ref ContainerExecutionRole
+      RequiresCompatibilities:
+        - FARGATE
+      Memory: '512'
+      Cpu: '256'
+      ContainerDefinitions:
+        - Name: !Ref ApplicationName
+          #Essential: true
+          Image: !Ref EcrImageUri
+          Memory: 512
+          Essential: true
+          PortMappings:
+            - ContainerPort: !Ref PortNumber
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudWatchLogsGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
+              awslogs-create-group: 'true'
+
+  #Role for ECS container
+  ContainerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${ApplicationName}-${ApplicationEnvironment}-ContainerExecutionRole'
+      Description: IAM Role for ECS container
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ecs-tasks.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Tags:
+          - Key: ApplicationName
+            Value: !Ref ApplicationName
+          - Key: ApplicationEnvironment
+            Value: !Ref ApplicationEnvironment
+
+  #Cloudwatch Logs
+  CloudWatchLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Ref AWS::StackName
+      RetentionInDays: 365
