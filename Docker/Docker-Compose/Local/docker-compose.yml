@@ -1,0 +1,16 @@
+version: "3"
+
+#All Services pull from .env file
+services:
+    userms:
+       image: user-ms:latest
+       ports:
+         - "8000:8000"
+    loansms:
+       image: loans-ms:latest
+       ports:
+         - "8020:8020"
+    branchesms:
+       image: branches-ms:latest
+       ports:
+         - "8080:8080"

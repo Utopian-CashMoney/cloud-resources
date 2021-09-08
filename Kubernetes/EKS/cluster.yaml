@@ -34,3 +34,12 @@ nodeGroups:
     subnets:
       - cashmoney-public-1a
       - cashmoney-public-1b
+
+fargateProfiles:
+  - name: fp-default
+    selectors:
+      - namespace: default
+      - namespace: kube-system
+  - name: fp-dev
+    selectors:
+      - namespace: development

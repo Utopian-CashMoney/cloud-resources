@@ -4,7 +4,6 @@ metadata:
   labels:
     run: userms-service
   name: userms-service
-  namespace: development
 spec:
   selector:
     app: userms-dep
@@ -19,9 +18,13 @@ metadata:
   labels:
     run: userms-dep
   name: userms-dep
-  namespace: development
 spec:
   replicas: 3
+  strategy:
+     type: RollingUpdate
+     rollingUpdate:
+        maxSurge: 2
+        maxUnavailable: 0
   selector:
     matchLabels:
       app: userms-dep
@@ -31,7 +34,8 @@ spec:
         app: userms-dep
     spec:
       containers:
-      - image: 202447729588.dkr.ecr.us-east-2.amazonaws.com/user-ms
+      - image: user-ms:latest
+        imagePullPolicy: Never
         name: userms-dep
         ports:
         - containerPort: 8000

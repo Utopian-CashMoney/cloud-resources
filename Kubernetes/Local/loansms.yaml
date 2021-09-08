@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: loansms-service
+  name: loansms-service
+spec:
+  selector:
+    app: loansms-dep
+  ports:
+    - protocol: TCP
+      port: 8020
+      targetPort: 8020
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: loansms-dep
+  name: loansms-dep
+spec:
+  replicas: 3
+  strategy:
+     type: RollingUpdate
+     rollingUpdate:
+        maxSurge: 2
+        maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: loansms-dep
+  template:
+    metadata:
+      labels:
+        app: loansms-dep
+    spec:
+      containers:
+      - image: loans-ms:latest
+        imagePullPolicy: Never
+        name: loansms-dep
+        ports:
+        - containerPort: 8020

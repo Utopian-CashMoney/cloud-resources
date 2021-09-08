@@ -1,0 +1,57 @@
+version: "3.9"
+x-aws-vpc: ${VPCID}
+x-aws-loadbalancer: ${loadBalancer}
+
+#All Services pull from .env file
+services:
+
+    #User Microservice
+    userms:
+       image: ${userImage}
+       deploy:
+         mode: replicated
+         replicas: 3
+         update_config:
+           parallelism: 2
+           delay: 10s
+         resources:
+           limits:
+             cpus: "0.50"
+             memory: 50M
+       ports:
+           - target: ${userPort}
+             x-aws-protocol: http
+
+    #Loans Microservice
+    loansms:
+       image: ${loansImage}
+       deploy:
+         mode: replicated
+         replicas: 3
+         update_config:
+           parallelism: 2
+           delay: 10s
+         resources:
+           limits:
+             cpus: "0.50"
+             memory: 50M
+       ports:
+           - target: ${loansPort}
+             x-aws-protocol: http
+
+    #Branches Microservice
+    branchesms:
+       image: ${branchesImage}
+       deploy:
+         mode: replicated
+         replicas: 3
+         update_config:
+           parallelism: 2
+           delay: 10s
+         resources:
+           limits:
+             cpus: "0.50"
+             memory: 50M
+       ports:
+           - target: ${branchesPort}
+             x-aws-protocol: http

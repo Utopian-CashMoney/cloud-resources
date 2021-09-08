@@ -4,7 +4,6 @@ metadata:
   labels:
     run: branchesms-service
   name: branchesms-service
-  namespace: development
 spec:
   selector:
     app: branchesms-dep
@@ -19,9 +18,13 @@ metadata:
   labels:
     run: branchesms-dep
   name: branchesms-dep
-  namespace: development
 spec:
   replicas: 3
+  strategy:
+     type: RollingUpdate
+     rollingUpdate:
+        maxSurge: 2
+        maxUnavailable: 0
   selector:
     matchLabels:
       app: branchesms-dep
@@ -31,7 +34,8 @@ spec:
         app: branchesms-dep
     spec:
       containers:
-      - image: 202447729588.dkr.ecr.us-east-2.amazonaws.com/branches-ms
+      - image: branches-ms:latest
+        imagePullPolicy: Never
         name: branchesms-dep
         ports:
         - containerPort: 8080
