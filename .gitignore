@@ -1,7 +1,9 @@
 
 Jenkins/*
-Terraform/.terraform.lock.hcl
-Terraform/.terraform/
-*.tfstate*
 Docker/Docker-Compose/.env
+
+*.tfstate*
 *.terraform*
+
+terraform.tfvars
+*.auto.tfvars
