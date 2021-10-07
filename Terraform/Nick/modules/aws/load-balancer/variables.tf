@@ -4,12 +4,19 @@ variable "cashmoney_vpc" {
   description = "Main CashMoney VPC."
 }
 
-variable "public_subnet_ids" {
-  type        = list(string)
-  description = "Public Subnets of the cashmoney VPC."
+variable "is_private" {
+  description = "Whether or not the load balancer should be internal or not"
+  type        = bool
+  default     = true
 }
 
-variable "private_subnet_ids" {
+variable "subnet_ids" {
   type        = list(string)
-  description = "Private Subnets of the cashmoney VPC."
+  description = "Subnet IDs for the load balancer to use"
+}
+
+variable "environment" {
+  description = "Environment tag value for resources"
+  type        = string
+  default     = "def"
 }

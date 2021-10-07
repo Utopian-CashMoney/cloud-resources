@@ -1,9 +1,9 @@
 
-Jenkins/*
 Docker/Docker-Compose/.env
 
 *.tfstate*
-*.terraform*
+*.terraform
 
 terraform.tfvars
 *.auto.tfvars
+Terraform/Nick/deployments/base-azure/.vault-token

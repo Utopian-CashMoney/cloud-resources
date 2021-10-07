@@ -1,14 +1,17 @@
 
 output "vpc_id" {
-  value = module.networking.cashmoney_vpc.id
+  description = "Networking VPC ID"
+  value       = module.networking.cashmoney_vpc.id
 }
 
-output "alb_id" {
-  value = module.load_balancer.alb.arn_suffix
+output "alb_arn_suffix" {
+  description = "Suffix of App Load Balancer ARN"
+  value       = module.load_balancer.alb.arn_suffix
 }
 
-output "cluster_arn" {
-  value = module.cluster.cluster.arn
+output "alb_dns" {
+  description = "DNS name of App Load Balancer"
+  value       = module.load_balancer.alb.dns_name
 }
 
 data "aws_caller_identity" "current" {}
@@ -21,7 +24,6 @@ AWS_ACCOUNT_ID=${data.aws_caller_identity.current.account_id}
 AWS_REGION=${var.aws_region}
 ECS_VPC_ID=${module.networking.cashmoney_vpc.id}
 ECS_ALB_ARN_AFFIX=${module.load_balancer.alb.arn_suffix}
-ECS_CLUSTER_NAME=${module.cluster.cluster.name}
 EOT
 }
 

@@ -1,40 +1,24 @@
 
 variable "vpc_cidr_block" {
-  type        = string
   description = "Value for the VPC's CIDR block."
+  type        = string
   default     = "10.1.0.0/16"
 }
 
-variable "subnet_zone_1" {
-  type        = string
-  description = "Subnet availability zone."
+variable "public_subnet_cidrs" {
+  description = "List of public subnet cidr blocks"
+  type        = list(string)
+  default     = ["10.1.0.0/24"]
 }
 
-variable "subnet_zone_2" {
-  type        = string
-  description = "Subnet availability zone."
+variable "private_subnet_cidrs" {
+  description = "List of private subnet cidr blocks"
+  type        = list(string)
+  default     = ["10.1.1.0/24"]
 }
 
-variable "subnet_cidr_block_public_1a" {
+variable "environment" {
+  description = "Environment tag value for resources"
   type        = string
-  description = "Value for the VPC subnet's CIDR block."
-  default     = "10.1.0.0/24"
-}
-
-variable "subnet_cidr_block_public_1b" {
-  type        = string
-  description = "Value for the VPC subnet's CIDR block."
-  default     = "10.1.1.0/24"
-}
-
-variable "subnet_cidr_block_private_1a" {
-  type        = string
-  description = "Value for the VPC subnet's CIDR block."
-  default     = "10.1.2.0/24"
-}
-
-variable "subnet_cidr_block_private_1b" {
-  type        = string
-  description = "Value for the VPC subnet's CIDR block."
-  default     = "10.1.3.0/24"
+  default     = "def"
 }

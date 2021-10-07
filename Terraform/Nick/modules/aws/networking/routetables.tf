@@ -2,10 +2,9 @@
 resource "aws_default_route_table" "private_rt" {
   default_route_table_id = aws_vpc.cashmoney_vpc.default_route_table_id
 
-  route = []
-
   tags = {
-    Name = "cashmoney-private-rt"
+    Name        = "cashmoney-private-rt"
+    Environment = var.environment
   }
 }
 
@@ -18,7 +17,8 @@ resource "aws_route_table" "public_rt" {
   }
 
   tags = {
-    Name = "cashmoney-public-rt"
+    Name        = "cashmoney-public-rt"
+    Environment = var.environment
   }
 }
 
@@ -28,22 +28,16 @@ resource "aws_route" "private_r" {
   nat_gateway_id         = aws_nat_gateway.nat.id
 }
 
-resource "aws_route_table_association" "public_1a" {
-  subnet_id      = aws_subnet.public_1a.id
+resource "aws_route_table_association" "public_rt_associations" {
+  count = length(aws_subnet.public_subnets)
+
+  subnet_id      = aws_subnet.public_subnets[count.index].id
   route_table_id = aws_route_table.public_rt.id
 }
 
-resource "aws_route_table_association" "public_1b" {
-  subnet_id      = aws_subnet.public_1b.id
-  route_table_id = aws_route_table.public_rt.id
-}
+resource "aws_route_table_association" "private_rt_associations" {
+  count = length(aws_subnet.private_subnets)
 
-resource "aws_route_table_association" "private_1a" {
-  subnet_id      = aws_subnet.private_1a.id
-  route_table_id = aws_default_route_table.private_rt.id
-}
-
-resource "aws_route_table_association" "private_1b" {
-  subnet_id      = aws_subnet.private_1b.id
+  subnet_id      = aws_subnet.private_subnets[count.index].id
   route_table_id = aws_default_route_table.private_rt.id
 }

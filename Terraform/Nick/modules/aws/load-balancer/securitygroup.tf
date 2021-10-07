@@ -27,9 +27,20 @@ resource "aws_security_group" "alb_sg" {
       self             = false
     },
     {
+      description      = "Incoming traffic for UserMS"
+      from_port        = 8000
+      to_port          = 8000
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      security_groups  = []
+      self             = false
+    },
+    {
       description      = "Incoming traffic for BranchesMS"
-      from_port        = 8080
-      to_port          = 8080
+      from_port        = 8010
+      to_port          = 8010
       protocol         = "tcp"
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []
@@ -39,19 +50,8 @@ resource "aws_security_group" "alb_sg" {
     },
     {
       description      = "Incoming traffic for LoansMS"
-      from_port        = 8020
-      to_port          = 8020
-      protocol         = "tcp"
-      cidr_blocks      = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      security_groups  = []
-      self             = false
-    },
-    {
-      description      = "Incoming traffic for UserMS"
-      from_port        = 8000
-      to_port          = 8000
+      from_port        = 8081
+      to_port          = 8081
       protocol         = "tcp"
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = []

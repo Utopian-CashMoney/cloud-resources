@@ -4,19 +4,6 @@ resource "azurerm_resource_group" "main" {
   location = var.location
 }
 
-# module "virtual_network" {
-#   source = "./modules/networking"
-
-#   resource_group_name = azurerm_resource_group.main.name
-#   location            = azurerm_resource_group.main.location
-#   network_cidr_block  = "10.0.0.0/16"
-#   subnet_cidr_blocks = [
-#     "10.0.0.0/20",
-#     "10.0.16.0/20",
-#     "10.0.32.0/20"
-#   ]
-# }
-
 module "vnet" {
   source  = "Azure/vnet/azurerm"
   version = "2.5.0"
@@ -93,20 +80,3 @@ resource "azurerm_kubernetes_cluster" "aks" {
     admin_password = var.windows_profile_admin_password
   }
 }
-
-/*
-module "aks" {
-  source  = "Azure/aks/azurerm"
-  version = "4.13.0"
-
-  resource_group_name  = azurerm_resource_group.main.name
-  agents_max_count     = 2
-  agents_min_count     = 1
-  kubernetes_version   = "1.21.2"
-  orchestrator_version = "1.21.2"
-  prefix               = "dev"
-  vnet_subnet_id       = module.vnet.vnet_subnets[0]
-
-  depends_on = [module.vnet]
-}
-*/

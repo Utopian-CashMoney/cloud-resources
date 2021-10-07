@@ -1,42 +1,31 @@
 
-resource "aws_subnet" "public_1a" {
+data "aws_availability_zones" "zones" {
+  state = "available"
+}
+
+resource "aws_subnet" "public_subnets" {
+  count = length(var.public_subnet_cidrs)
+
   vpc_id                  = aws_vpc.cashmoney_vpc.id
-  cidr_block              = var.subnet_cidr_block_public_1a
-  availability_zone       = var.subnet_zone_1
+  cidr_block              = var.public_subnet_cidrs[count.index]
+  availability_zone       = element(data.aws_availability_zones.zones.names, count.index)
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "cashmoney-public-1a"
+    Name        = "public-${count.index + 1}"
+    Environment = var.environment
   }
 }
 
-resource "aws_subnet" "public_1b" {
-  vpc_id                  = aws_vpc.cashmoney_vpc.id
-  cidr_block              = var.subnet_cidr_block_public_1b
-  availability_zone       = var.subnet_zone_2
-  map_public_ip_on_launch = true
+resource "aws_subnet" "private_subnets" {
+  count = length(var.private_subnet_cidrs)
 
-  tags = {
-    Name = "cashmoney-public-1b"
-  }
-}
-
-resource "aws_subnet" "private_1a" {
   vpc_id            = aws_vpc.cashmoney_vpc.id
-  cidr_block        = var.subnet_cidr_block_private_1a
-  availability_zone = var.subnet_zone_1
+  cidr_block        = var.private_subnet_cidrs[count.index]
+  availability_zone = element(data.aws_availability_zones.zones.names, count.index)
 
   tags = {
-    Name = "cashmoney-private-1a"
-  }
-}
-
-resource "aws_subnet" "private_1b" {
-  vpc_id            = aws_vpc.cashmoney_vpc.id
-  cidr_block        = var.subnet_cidr_block_private_1b
-  availability_zone = var.subnet_zone_2
-
-  tags = {
-    Name = "cashmoney-private-1b"
+    Name        = "private-${count.index + 1}"
+    Environment = var.environment
   }
 }

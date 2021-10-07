@@ -4,6 +4,7 @@ resource "aws_vpc" "cashmoney_vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "cashmoney"
+    Name        = "cashmoney-${var.environment}"
+    Environment = var.environment
   }
 }
